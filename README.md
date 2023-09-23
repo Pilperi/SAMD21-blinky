@@ -11,7 +11,7 @@ Minulla on laatikossa iso määrä halpoja [Seeeduino XIAO -kehitysalustoja](htt
 
 Aikani asioita googlailin ja lueskelin, opettelin välissä AVR assemblyn perusteet ymmärtääkseni rekisterilähestymisen kunnolla, ja pitkän yritys-erhe-ketjun kautta sain homman pelittämään. Tässä repossa käyn ketjun tiivistetyssä muodossa läpi, osittain muistiinpanoina itselleni, osittain dokumentaationa jos joku joskus yrittää väsätä mitään vastaavaa.
 
-Lyhykäisyydessään homman lopputulos on se, että painan napilla SAMD21-sirun RESET-pinnin +3,3 V jännitteeseen ja ajan `bash makebuild.sh`, jolloin Raspi kääntää koodin ja lähettää sen sirulle. Kun päästän RESET-napista irti ja painan sen takaisin alas, siru suorittaa koodin.
+Lyhykäisyydessään homman lopputulos on se, että painan napilla SAMD21-sirun RESET-pinnin +3,3 V jännitteeseen ja ajan `bash makebuild.sh`, jolloin Raspi kääntää koodin ja lähettää sen sirulle. Kun päästän RESET-napista irti ja painan sen takaisin alas, siru suorittaa koodin. Tässä tapauksessa suoritus on että pinni 1 (PA00) lähtee vilkkumaan harventuvaan tahtiin. Kun tahti on liian harva, aloitetaan uudestaan tiheästä vilkkumistahdista.
 
 ## Tiedostojen rakenne
 - `makebuild.sh`: käännä ja linkkaa C-koodi, lähetä Raspin GPIO:lla sirun suuntaan
