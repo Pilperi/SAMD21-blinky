@@ -38,12 +38,12 @@ openOCD ajeluun Raspberry Pillä löytyi [tosi hyvä tutoriaali adafruitilta](ht
 
 Piuhoitettu versio näyttää suunnilleen tältä
 
-<img src="img/im01_piuhat.jpg" width="700" height="700" /></img>
+<img src="img/im01_piuhat.jpg" width="700"></img>
 
 Suurin osa piuhojen sotkuisuusluukista tulee siitä, että SAMD21 virroittaa itsensä niin, että joka sivulta lähtee virtapiuha (pinnit 6, 17, 36, 44) ja maapiuha (pinnit 5, 18, 35, 42), [mitkä olisi kaikki suotavaa kytkeä](https://ww1.microchip.com/downloads/aemDocuments/documents/MCU32/ProductDocuments/DataSheets/SAM-D21-DA1-Family-Data-Sheet-DS40001882H.pdf#page=37). Kuvassa ne on nuo punaiset ja valkoiset niput. Nämä on kytketty jännitteentasaajan kautta Raspin 3V3-paikkaan ja maahan (Raspi-pinnit 1 ja 6). Näiden lisäksi pinni 45 (`PA30`, SWCLK) menee raspin pinniin 22 (`GPIO25`), pinni 46 (`PA31`, SWDIO) menee raspin pinniin 18 (`GPIO24`) ja pinni 40 (`~RST`) on effektiivisesti sidottu käyttöjännitteeseen.
 piiroksena homma on huomattavasti selkeämpi:
 
-<img src="img/im02_skeema.jpg" width="700" height="700" /></img>
+<img src="img/im02_skeema.jpg" width="700"></img>
 
 Kuten edellä linkatuissa mainitaankin, openOCD etsii oletuksena skriptitiedostoa `openocd.cfg`, aloittaen kutsukansiosta. Flagilla `-f` saa speksattua jonkun muun skriptin ajettavaksi. Eka sanity check piuhoituksissa on katsoa, vastaako ohjelmoitava siru mitään listauskomentosarjaan:
 ```cfg
@@ -157,6 +157,10 @@ Siitä siirryin `make` käyttöön ja ihmettelin aikani miten ihmeessä linkeri�
 ## Ne XIAO:n pohjan padit
 Seeeduino XIAO:n pohjassa on tarjolla väylä noihin ohjelmointiin tarvittaviin SWD-pinneihin, ja se on siinä mielessä kivempi ohjelmoitava että sirun virransyöttö ja maadoitus hoidetaan kortin puolella (maa+virta vs. neljä maata ja neljä virtaa). Jos pärjää rajoitetulla IO-pinnimäärällä, se on kaikin puolin parempi testikapine. Oikeastaan ainoa ongelma on se, että ohjelmointiväylä on hankalasti: sirun pohjassa ja pelkkinä metallipadeina eikä esim. pinneinä tai minään mihin saisi järkevästi juotettua pinnit. Ekana yrityksenäni juotin siihen naarasrimaa 2+2, siten että taivutin pinnien päädyt sopivasti. Tällöin kortti mahtuu yhä leipälaudalle, mutta siinä on lisäksi vaakatasoon osoittavat naaraspinnit mihin voi tökätä hyppylangat. Paitsi että...
 
-<img src="img/im03_padit.jpg" width="700" height="700" /></img>
+<img src="img/im03_padit.jpg" width="700"></img>
 
 ...paitsi että se pieni vääntömomentti mitä tuli, riitti siihen että palikat repi padit irti PCB:stä. Raakametallikoodin laitto sirulle meinaa, että Arduino-bootloader pyyhitään tieltä pois, ks. [How to unbrick a dead XIAO using ST-LINK and OpenOCD](https://forum.seeedstudio.com/t/how-to-unbrick-a-dead-xiao-using-st-link-and-openocd/255562). Toisin sanottuna siruun ei saa enää koodia SWD-rajapintaa pitkin koska padit on mennyttä, eikä myöskään Arduino-IDE kautta koska bootloaderi on heivattu sirulta hevon helvettiin. Kyseinen bootloader toimii käytännössä niin, että [johto yhdistyy suoraan sirun USB-pinneihin](https://files.seeedstudio.com/wiki/Seeeduino-XIAO/res/Seeeduino-XIAO-v1.0-SCH-191112.pdf), siru näyttäytyy muistitikkuna ja uudelleenohjelmoi itse itsensä annetulla datalla. Vrt. Arduino UNO ymv joissa ohjelmoitavan sirun lisäksi kortilta löytyy toinen Atmelin siru, jonka tehtävä on hoitaa kommunikaatio PC:n kanssa ja sen pääsirun ohjelmointi. Siinä mielessä aika päheää toteuttaa koko homma vain yhdellä sirulla.
+
+Tästä oppineena tein kakkositeraation, jossa kolvasin padeihin muotoon leikattua lattakaapelia, ja laitoin kaveriksi *reilusti* erikeepperiä. Pysyy paikallaan ja ainoan väännön pitäisi olla piuhan taivuttelu, eli ei ainakaan padeja pitäisi rasittaa:
+
+<img src="img/im04_johto.jpg" width="700"></img>
