@@ -40,13 +40,15 @@ Piuhoitettu versio näyttää suunnilleen tältä
 
 <img src="img/im01_piuhat.jpg" width="700"></img>
 
-Suurin osa piuhojen sotkuisuusluukista tulee siitä, että SAMD21 virroittaa itsensä niin, että joka sivulta lähtee virtapiuha (pinnit 6, 17, 36, 44) ja maapiuha (pinnit 5, 18, 35, 42), [mitkä olisi kaikki suotavaa kytkeä](https://ww1.microchip.com/downloads/aemDocuments/documents/MCU32/ProductDocuments/DataSheets/SAM-D21-DA1-Family-Data-Sheet-DS40001882H.pdf#page=37). Kuvassa ne on nuo punaiset ja valkoiset niput. Nämä on kytketty jännitteentasaajan kautta Raspin 3V3-paikkaan ja maahan (Raspi-pinnit 1 ja 6). Näiden lisäksi pinni 45 (`PA30`, SWCLK) menee raspin pinniin 22 (`GPIO25`), pinni 46 (`PA31`, SWDIO) menee raspin pinniin 18 (`GPIO24`) ja pinni 40 (`~RST`) on effektiivisesti sidottu käyttöjännitteeseen.
+Suurin osa piuhojen sotkuisuusluukista tulee siitä, että SAMD21 virroittaa itsensä niin, että joka sivulta lähtee virtapiuha (pinnit 6, 17, 36, 44) ja maapiuha (pinnit 5, 18, 35, 42), [mitkä olisi kaikki suotavaa kytkeä](https://ww1.microchip.com/downloads/aemDocuments/documents/MCU32/ProductDocuments/DataSheets/SAM-D21-DA1-Family-Data-Sheet-DS40001882H.pdf#page=37). Kuvassa ne on nuo punaiset ja valkoiset niput. Nämä on kytketty jännitteentasaajan kautta Raspin 3V3-paikkaan ja maahan (Raspi-pinnit 1 ja 6). Näiden lisäksi raspin SPI-väylä SPI0 on valjastettu ohjelmointikäyttöön: `SPI0 SCLK` (`GPIO11`) menee SAMD-pinniin 45 (`PA30`, SWCLK), `SPI0 MISO` (`GPIO 9`) pinniin 46 (`PA31`, SWDIO) ja `SPI0 CE0`pinniin 40 (`~RST`), joskin se on effektiivisesti sidottu käyttöjännitteeseen.
 piiroksena homma on huomattavasti selkeämpi:
 
 <img src="img/im02_skeema.jpg" width="700"></img>
 
+Motiivina `SPI0`-väylään sitomisessa on se, että pinnipaikat on helppo muistaa kun ne on sijoitettu suunnilleen samaan funktion fyysiseen paikkaan. Lisäksi suunnitelmana on tehdä ohjelmointihattu, jolla saisi ohjelmoitua mahdollisimman monia erilaisia siruja. Sen kannalta on kiva jos eri kohteiden piuhat lähtee samasta osoitteesta, ja että periaatteessa hatun kautta voi suoraan ajella ihan suoria `SPI`-komentojakin.
+
 Kuten edellä linkatuissa mainitaankin, openOCD etsii oletuksena skriptitiedostoa `openocd.cfg`, aloittaen kutsukansiosta. Flagilla `-f` saa speksattua jonkun muun skriptin ajettavaksi. Eka sanity check piuhoituksissa on katsoa, vastaako ohjelmoitava siru mitään listauskomentosarjaan:
-```cfg
+```
 # target.cfg
 source [find atsamd21.cfg]
 set transport swd
